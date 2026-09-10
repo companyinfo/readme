@@ -40,14 +40,13 @@ func envOr(key, fallback string) string {
 }
 
 func main() {
-	apiKey := os.Getenv("README_API_KEY")
-	if apiKey == "" {
-		log.Fatal("set README_API_KEY")
-	}
+	apiKey := "***********************"
 
 	baseURL := envOr("README_BASE_URL", "https://api.readme.com/v2")
 	branch := envOr("README_BRANCH", "v0.0")
-	runWrite := os.Getenv("README_RUN_WRITE") == "1"
+
+	// set this to true if you want to run the examples that actually create pages on ReadMe
+	runWrite := false
 
 	client, err := readme.New(apiKey, readme.WithBaseURL(baseURL))
 	if err != nil {
