@@ -29,6 +29,8 @@ type Client struct {
 	Guides GuideService
 	// Reference is the service for accessing reference (API reference) pages.
 	Reference ReferenceService
+	// APIDefinitions is the service for accessing API definitions.
+	APIDefinitions APIDefinitionService
 }
 
 // Option configures a Client.
@@ -83,6 +85,7 @@ func New(apiKey string, opts ...Option) (*Client, error) {
 	c.Categories = NewCategoryClient(c)
 	c.Guides = NewGuideClient(c)
 	c.Reference = NewReferenceClient(c)
+	c.APIDefinitions = NewAPIDefinitionClient(c)
 
 	return c, nil
 }

@@ -11,7 +11,7 @@ import (
 // allowed values when the input is empty or unknown.
 func validateSection(s CategoryType) error {
 	switch canonSection(s) {
-	case "guides", "reference":
+	case "guide", "reference":
 		return nil
 	default:
 		return errors.New("section must be one of [guides reference]")
@@ -70,5 +70,5 @@ type CategoryParams struct {
 	// Title is the title of the category.
 	Title string `json:"title" validate:"required"`
 	// Section is "guides" or "reference". Required on Create; optional on Update.
-	Section CategoryType `json:"section,omitempty" validate:"required,oneof=guides reference"`
+	Section CategoryType `json:"section,omitempty" validate:"required,oneof=guide reference"`
 }

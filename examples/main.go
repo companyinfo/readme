@@ -44,6 +44,8 @@ func main() {
 
 	baseURL := envOr("README_BASE_URL", "https://api.readme.com/v2")
 	branch := envOr("README_BRANCH", "v0.0")
+
+	// set this to true if you want to run the examples that actually create pages on ReadMe
 	runWrite := false
 
 	client, err := readme.New(apiKey, readme.WithBaseURL(baseURL))
@@ -171,4 +173,51 @@ func main() {
 		log.Fatalf("reference.Delete: %v", err)
 	}
 	fmt.Printf("Deleted reference %q\n", ref.Slug)
+
+	// ---------------------------------------------------------------------
+	// 4. API Definition flow.
+	// ---------------------------------------------------------------------
+	spec := `{"openapi":"3.0.0","info":{"title":"Example API","version":"1.0.0"},"paths":{}}`
+	filename := "example.json"
+
+	fmt.Println("Validating API definition...")
+	warns, err := client.APIDefinitions.Validate(ctx, branch, readme.APIDefinitionParams{
+		Schema:   spec,
+		FileName: filename,
+	})
+	if err != nil {
+		log.Fatalf("apiDefinitions.Validate: %v", err)
+	}
+	fmt.Printf("Validation result: %s\n", warns)
+
+	fmt.Println("Creating API definition...")
+	err = client.APIDefinitions.Create(ctx, branch, readme.APIDefinitionParams{
+		Schema:   spec,
+		FileName: filename,
+	})
+	if err != nil {
+		log.Fatalf("apiDefinitions.Create: %v", err)
+	}
+	fmt.Printf("Created API definition: %s\n", filename)
+
+	apiDef, err := client.APIDefinitions.Get(ctx, branch, filename)
+	if err != nil {
+		log.Fatalf("apiDefinitions.Get: %v", err)
+	}
+	fmt.Printf("Fetched API definition: title=%q id=%q\n", apiDef.Title, apiDef.ID)
+
+	fmt.Println("Updating API definition...")
+	err = client.APIDefinitions.Update(ctx, branch, filename, readme.APIDefinitionParams{
+		Schema:   `{"openapi":"3.0.0","info":{"title":"Example API (updated)","version":"1.0.0"},"paths":{}}`,
+		FileName: filename,
+	})
+	if err != nil {
+		log.Fatalf("apiDefinitions.Update: %v", err)
+	}
+	fmt.Println("Updated API definition.")
+
+	if err := client.APIDefinitions.Delete(ctx, branch, filename); err != nil {
+		log.Fatalf("apiDefinitions.Delete: %v", err)
+	}
+	fmt.Printf("Deleted API definition %q\n", filename)
 }

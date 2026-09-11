@@ -4,13 +4,14 @@ A Go client for the ReadMe API v2 that provides typed DTOs and convenient servic
 - Categories (create, list, get-by-title, update, delete)
 - Guides (create, get, update, delete)
 - References (create, get, update, delete)
+- API Definitions (create, get, update, delete, validate)
 
 This SDK wraps JSON:API-style payloads with idiomatic Go types and adds light client-side validation and structured error handling.
 
 ## Features
 
 - Simple client setup with pluggable HTTP client and base URL
-- Strongly-typed request/response models for categories, guides, and references
+- Strongly-typed request/response models for categories, guides, references, and API definitions
 - Consistent CRUD service interfaces
 - Granular error details via APIError and APIFieldError
 - Small, dependency-light surface built on resty
@@ -89,6 +90,7 @@ Authentication: pass your ReadMe API key to readme.New. The client sends Authori
 - Categories: Create, List (by section), GetByTitle, Update, Delete
 - Guides: Create, Get, Update, Delete
 - References: Create, Get, Update, Delete
+- APIDefinitions: Create, Get, Update, Delete, Validate
 
 All operations require a branch (version) path parameter (e.g., v1.0, v0.0).
 
@@ -117,6 +119,14 @@ r, err := client.Reference.Create(ctx, "v0.0", readme.ReferenceParams{
   Type:     "basic",
   Category: &readme.ResourceRef{URI: "<category-uri>"},
   API:      &readme.ReferenceAPI{Method: "get", Path: "/pets", Source: "api"},
+})
+```
+
+Upload an API definition:
+```go
+err := client.APIDefinitions.Create(ctx, "v0.0", readme.APIDefinitionParams{
+  FileName: "petstore.json",
+  Schema:   `{"openapi":"3.0.0", ...}`,
 })
 ```
 
