@@ -70,5 +70,5 @@ type CategoryParams struct {
 	// Title is the title of the category.
 	Title string `json:"title" validate:"required"`
 	// Section is "guides" or "reference". Required on Create; optional on Update.
-	Section CategoryType `json:"section,omitempty" validate:"required,oneof=guides reference"`
+	Section CategoryType `json:"section,omitempty" validate:"required,oneof=guide reference"`
 }
